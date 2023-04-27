@@ -1464,7 +1464,7 @@
                     <div class="contact-form-wrapper">
                         <div class="introduce">
 
-                            <form class="rnt-contact-form row" method="POST" action="https://formspree.io/f/mqkowvwy">
+                            <form id="contact-form" class="rnt-contact-form row" method="POST" action="https://formspree.io/f/mqkowvwy">
 
                                 <div class="col-lg-6">
                                     <div class="form-group">
@@ -1497,7 +1497,7 @@
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="contact-message">Your Message</label>
-                                        <textarea name="contact-message" id="contact-message" cols="30" rows="10" required></textarea>
+                                        <textarea name="Message" id="contact-message" cols="30" rows="10" required></textarea>
                                     </div>
                                 </div>
 
@@ -1596,6 +1596,52 @@
     gtag('js', new Date());
 
     gtag('config', 'G-MB0B9V2WLV');
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    let form = document.getElementById("contact-form");
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        let data = new FormData(event.target);
+        fetch(event.target.action, {
+            method: form.method,
+            body: data,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                Swal.fire(
+                    'Success',
+                    'Thanks for your submission!',
+                    'success'
+                )
+                form.reset()
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        console.log(data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        Swal.fire(
+                            'Error',
+                            'Oops! There was a problem submitting your form',
+                            'error'
+                        )
+                    }
+                })
+            }
+        }).catch(error => {
+            Swal.fire(
+                'Error',
+                'Oops! There was a problem submitting your form',
+                'error'
+            )
+        });
+    }
+    form.addEventListener("submit", handleSubmit)
 </script>
 </body>
 </html>
