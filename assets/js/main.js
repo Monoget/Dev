@@ -491,29 +491,80 @@ function navTab(value){
     }
 }
 
-let x = getCookie('alert');
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+let chatbox = document.getElementById('fb-customer-chat');
+chatbox.setAttribute("page_id", "1443497179260890");
+chatbox.setAttribute("attribution", "biz_inbox");
+
+window.fbAsyncInit = function() {
+    FB.init({
+        xfbml            : true,
+        version          : 'v14.0'
+    });
+};
+
+(function(d, s, id) {
+    let js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-MB0B9V2WLV');
+
+let form = document.getElementById("contact-form");
+
+async function handleSubmit(event) {
+    event.preventDefault();
+    let data = new FormData(event.target);
+    fetch(event.target.action, {
+        method: form.method,
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            Swal.fire(
+                'Success',
+                'Thanks for your submission!',
+                'success'
+            )
+            form.reset()
+        } else {
+            response.json().then(data => {
+                if (Object.hasOwn(data, 'errors')) {
+                    console.log(data["errors"].map(error => error["message"]).join(", "));
+                } else {
+                    Swal.fire(
+                        'Error',
+                        'Oops! There was a problem submitting your form',
+                        'error'
+                    )
+                }
+            })
+        }
+    }).catch(error => {
+        Swal.fire(
+            'Error',
+            'Oops! There was a problem submitting your form',
+            'error'
+        )
+    });
+}
+form.addEventListener("submit", handleSubmit)
+
+let portfolio=1;
+
+function loadPortfolio(){
+    let pageName='portfolio-'+portfolio+'.html';
+    $("#portfolioPage").load(pageName);
+    portfolio+=1;
+    if(portfolio===3){
+        $('#portfolioPagebtn').hide();
     }
-    return null;
-}
-console.log(x);
-if(x==1){
-    Swal.fire({
-        title: 'Successful',
-        text: 'Request Successful',
-        imageUrl: 'http://monoget.me/assets/images/logo/logo-dark.png',
-        imageWidth: 139,
-        imageHeight: 70,
-        imageAlt: 'Custom image',
-    })
-    eraseCookie('alert');
-}
-function eraseCookie(name) {
-    document.cookie = name +'=;';
 }
