@@ -564,7 +564,7 @@ function loadPortfolio(){
     let pageName='portfolio-'+portfolio+'.html';
     $("#portfolioPage").load(pageName);
     portfolio+=1;
-    if(portfolio===3){
+    if(portfolio===4){
         $('#portfolioPagebtn').hide();
     }
 }
